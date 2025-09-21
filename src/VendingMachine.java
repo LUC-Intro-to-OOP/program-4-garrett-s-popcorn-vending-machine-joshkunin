@@ -14,14 +14,6 @@ At the conslusion of selecting all items, the program will display the total num
 - Consider parallel arrays
 
 
-
-Your program should operate similarly to the program shown in the .gif below
-The .gif below show three iterations of running the program
-
-![Alt text](https://instructorc.github.io/site/slides/java/images/ds/program_4_sample_output.gif "Program 4 Execution Example")
-
-
-
 | Product Row | Column P               | Column N                       | Column R           |
 |-------------|------------------------|-----------------------------------------------------|
 | 0           | Garrett Mix ($14.99)   |  Pecan Carmel Crisp ($10.99)   | Plain ($6.99)      |
@@ -30,13 +22,129 @@ The .gif below show three iterations of running the program
 
 
  */
-
 import java.util.Scanner; //Import the Scanner Class
-public class VendingMachine {
-    public static void main(String[] args) throws Exception {
-     
-
-
-    }//END OF MAIN
-
+        public class GarrettsPopcorn {
+        public static void main(String[] args) throws Exception {
+        // Constants for the vending machine
+        final int NUM_ROWS = 3;
+        final int NUM_COLS = 3;
+        final char[] COLUMNS = {'P', 'N', 'R'};
+        final String SENTINEL = "END";
+        
+        // Product names and prices - using parallel 2D arrays
+        final String[][] PRODUCT_NAMES = {
+            {"Garrett Mix", "Pecan Carmel Crisp", "Plain"},
+            {"Caramel Crisp", "Cashew Carmel Crisp", "Buttery"},
+            {"Cheese Corn", "Almond Carmel Crisp", "Sweet Corn"}
+        };
+        
+        final double[][] PRODUCT_PRICES = {
+            {14.99, 10.99, 6.99},
+            {16.99, 9.99, 8.99},
+            {12.99, 11.99, 7.99}
+        };
+        
+        // Variables for tracking purchases
+        Scanner scnr = new Scanner(System.in);
+        String userInput;
+        int row;
+        char column;
+        int totalItems = 0;
+        double totalCost = 0.0;
+        boolean validEntry;
+        
+        // Welcome message
+        System.out.println("=== Garrett's Popcorn Vending Machine ===");
+        System.out.println("Enter row (0-2) and column (P/N/R) to select items");
+        System.out.println("Type 'END' when finished");
+        System.out.println("");
+        
+        // Main purchase loop
+        while (true) {
+            // Get user input
+            System.out.print("Enter selection (row column) or 'END' to finish: ");
+            userInput = scnr.nextLine().trim().toUpperCase();
+            
+            // Check for sentinel value
+            if (userInput.equals(SENTINEL)) {
+                break;
+            }
+            
+            // Parse the input - expecting "row column" format
+            String[] parts = userInput.split("\\s+");
+            validEntry = false;
+            
+            // Validate we have exactly two parts
+            if (parts.length == 2) {
+                try {
+                    // Parse row number
+                    row = Integer.parseInt(parts[0]);
+                    
+                    // Parse column letter
+                    column = parts[1].charAt(0);
+                    
+                    // Validate row is between 0-2
+                    if (row >= 0 && row < NUM_ROWS) {
+                        // Validate column is P, N, or R
+                        if (column == 'P' || column == 'N' || column == 'R') {
+                            // Convert column letter to array index (P=0, N=1, R=2)
+                            int colIndex = (column == 'P') ? 0 : (column == 'N') ? 1 : 2;
+                            
+                            // Get product info
+                            String productName = PRODUCT_NAMES[row][colIndex];
+                            double productPrice = PRODUCT_PRICES[row][colIndex];
+                            
+                            // Display selection and add to totals
+                            System.out.println("You selected: " + productName + " - $" + String.format("%.2f", productPrice));
+                            System.out.println("Added to cart!");
+                            System.out.println("");
+                            
+                            totalItems++;
+                            totalCost += productPrice;
+                            validEntry = true;
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    // Invalid row number
+                }
+            }
+            
+            // Handle invalid input
+            if (!validEntry) {
+                System.out.println("Invalid selection! Please use row 0-2 and column P/N/R");
+                System.out.println("Example: '1 P' or '2 R'");
+                System.out.println("");
+            }
+        }
+        
+        // Final summary
+        System.out.println("=== Purchase Summary ===");
+        System.out.println("Total items purchased: " + totalItems);
+        System.out.printf("Total cost: $%.2f%n", totalCost);
+        System.out.println("Thank you for shopping at Garrett's Popcorn!");
+    
+        // Check for low stock items and calculate vendor reorder cost
+        int lowStockCount = 0;
+        double vendorReorderCost = 0.0;
+        String lowStockMessage = "";
+        
+        for (int r = 0; r < NUM_ROWS; r++) {
+            for (int c = 0; c < NUM_COLS; c++) {
+                if (stockLevels[r][c] < LOW_STOCK_THRESHOLD && stockLevels[r][c] > 0) {
+                    lowStockCount++;
+                    int itemsToReorder = MAX_STOCK - stockLevels[r][c];
+                    double vendorPrice = PRODUCT_PRICES[r][c] * VENDOR_COST_PERCENT;
+                    vendorReorderCost += itemsToReorder * vendorPrice;
+                    
+                    if (lowStockMessage.isEmpty()) {
+                        lowStockMessage = "Low stock alert: ";
+                    } else {
+                        lowStockMessage += ", ";
+                    }
+                    lowStockMessage += PRODUCT_NAMES[r][c] + " (" + itemsToReorder + " needed)";
+                }
+            }
+        }
+        
+        }
 }
