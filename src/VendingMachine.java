@@ -122,5 +122,29 @@ import java.util.Scanner; //Import the Scanner Class
         System.out.println("Total items purchased: " + totalItems);
         System.out.printf("Total cost: $%.2f%n", totalCost);
         System.out.println("Thank you for shopping at Garrett's Popcorn!");
-    }
+    
+        // Check for low stock items and calculate vendor reorder cost
+        int lowStockCount = 0;
+        double vendorReorderCost = 0.0;
+        String lowStockMessage = "";
+        
+        for (int r = 0; r < NUM_ROWS; r++) {
+            for (int c = 0; c < NUM_COLS; c++) {
+                if (stockLevels[r][c] < LOW_STOCK_THRESHOLD && stockLevels[r][c] > 0) {
+                    lowStockCount++;
+                    int itemsToReorder = MAX_STOCK - stockLevels[r][c];
+                    double vendorPrice = PRODUCT_PRICES[r][c] * VENDOR_COST_PERCENT;
+                    vendorReorderCost += itemsToReorder * vendorPrice;
+                    
+                    if (lowStockMessage.isEmpty()) {
+                        lowStockMessage = "Low stock alert: ";
+                    } else {
+                        lowStockMessage += ", ";
+                    }
+                    lowStockMessage += PRODUCT_NAMES[r][c] + " (" + itemsToReorder + " needed)";
+                }
+            }
+        }
+        
+        }
 }
